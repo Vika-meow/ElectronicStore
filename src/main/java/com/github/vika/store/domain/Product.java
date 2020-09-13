@@ -1,5 +1,6 @@
 package com.github.vika.store.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,12 +17,13 @@ public class Product {
 
     @Getter
     @Setter
-    private int serialNumber;
+    private String serialNumber;
 
     @Getter
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_type_id")
+    @JsonManagedReference
     private ProductType productType;
 
     @Getter
@@ -42,4 +44,16 @@ public class Product {
     @Setter
     private int count;
 
+    public Product() {
+    }
+
+    public Product(String serialNumber, ProductType productType, String info,
+                   Manufacturer manufacturer, int price, int count) {
+        this.serialNumber = serialNumber;
+        this.productType = productType;
+        this.info = info;
+        this.manufacturer = manufacturer;
+        this.price = price;
+        this.count = count;
+    }
 }

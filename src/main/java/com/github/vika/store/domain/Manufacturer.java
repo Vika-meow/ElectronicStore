@@ -1,5 +1,6 @@
 package com.github.vika.store.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,4 +25,11 @@ public class Manufacturer {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "manufacturer",
             orphanRemoval = true, cascade = {CascadeType.REMOVE})
     private List<Product> productList;
+
+    public Manufacturer() {
+    }
+
+    public Manufacturer(String name) {
+        this.name = name;
+    }
 }
