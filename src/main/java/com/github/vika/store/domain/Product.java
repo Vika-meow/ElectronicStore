@@ -1,5 +1,6 @@
 package com.github.vika.store.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,18 +20,15 @@ public class Product {
     @Setter
     private String serialNumber;
 
-    @Getter
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_type_id")
-    @JsonManagedReference
     private ProductType productType;
 
     @Getter
     @Setter
     private String info;
 
-    @Getter
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "manufacturer_id")
@@ -55,5 +53,15 @@ public class Product {
         this.manufacturer = manufacturer;
         this.price = price;
         this.count = count;
+    }
+
+    //@JsonBackReference
+    public ProductType getProductType() {
+        return productType;
+    }
+
+    //@JsonBackReference
+    public Manufacturer getManufacturer() {
+        return manufacturer;
     }
 }

@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlTransient;
 import java.util.List;
 
 @Entity
@@ -23,12 +24,9 @@ public class ProductType {
     @Setter
     private String name;
 
-    @Getter
     @Setter
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "productType",
             orphanRemoval = true, cascade = {CascadeType.REMOVE})
-    @JsonBackReference
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private List<Product> products;
 
     public ProductType() {
@@ -38,8 +36,8 @@ public class ProductType {
         this.name = name;
     }
 
-    /*@JsonIgnore
+    @JsonIgnore
     public List<Product> getProducts() {
         return products;
-    }*/
+    }
 }
