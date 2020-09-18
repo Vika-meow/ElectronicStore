@@ -11,11 +11,10 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
+import org.springframework.ui.Model;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,8 +33,8 @@ public class InitDatabase implements ApplicationRunner {
     ProductTypeRepository productTypeRepository;
 
     private List<String[]> readCsv(String fileName) throws IOException {
-        File file = new ClassPathResource(fileName, this.getClass().getClassLoader()).getFile();
-        try (BufferedReader csvReader = new BufferedReader(new FileReader(file))) {
+        InputStream in = getClass().getResourceAsStream(fileName);
+        try (BufferedReader csvReader = new BufferedReader(new InputStreamReader(in))) {
             List<String[]> rows = new ArrayList<>();
 
             String row = csvReader.readLine();
@@ -51,7 +50,7 @@ public class InitDatabase implements ApplicationRunner {
     }
 
     private Map<String, Manufacturer> loadManufacturers() throws IOException {
-        List<String[]> rows = readCsv("init/manufacturer.csv");
+        List<String[]> rows = readCsv("/init/manufacturer.csv");
         Map<String, Manufacturer> virtualMap = new HashMap<>();
 
         rows.forEach(row -> {
@@ -66,7 +65,7 @@ public class InitDatabase implements ApplicationRunner {
     }
 
     private Map<String, ProductType> loadProductTypes() throws IOException {
-        List<String[]> rows = readCsv("init/productType.csv");
+        List<String[]> rows = readCsv("/init/productType.csv");
 
         Map<String, ProductType> virtualMap = new HashMap<>();
         rows.forEach(row -> {
@@ -82,7 +81,7 @@ public class InitDatabase implements ApplicationRunner {
 
     private Map<String, Product> loadProducts(Map<String, ProductType> productTypes, Map<String,
             Manufacturer> manufacturers) throws IOException {
-        List<String[]> rows = readCsv("init/product.csv");
+        List<String[]> rows = readCsv("/init/product.csv");
 
         Map<String, Product> virtualMap = new HashMap<>();
         rows.forEach(row -> {
