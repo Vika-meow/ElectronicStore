@@ -1,0 +1,12 @@
+{
+  "serialNumber": "a17owl",
+  "productType": {
+    "id": 1
+  },
+  "info": "desktop",
+  "manufacturer": {
+    "id": 3
+  },
+  "price": 55000,
+  "count": 4
+}

@@ -25,28 +25,32 @@ public class ProductController {
     /*Add new product*/
     @PostMapping("/product/")
     public ResponseEntity<Product> createProduct(@RequestBody Product product) {
+        if(notAllFieldsFilled(product))
+            return ResponseEntity.badRequest().build();
         Product savedProduct = productRepository.save(product);
 
         URI location =
                 ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(savedProduct.getId()).toUri();
-
         return ResponseEntity.created(location).body(savedProduct);
     }
 
     /*Get product by id*/
     @GetMapping("/product/{id}")
-    public ResponseEntity<Product> retrieveOrder(@PathVariable int id) {
+    public ResponseEntity<Product> retrieveProduct(@PathVariable int id) {
         Optional<Product> product = productRepository.findById(id);
 
-        if (!product.isPresent()) {
+        if(!product.isPresent())
             return ResponseEntity.notFound().build();
-        }
         return ResponseEntity.ok(product.get());
     }
 
     /*Change existing product*/
     @PutMapping("/product/{id}")
-    public ResponseEntity<Product> updateProduct(@RequestBody Product newProduct, @PathVariable int id) {
+    public ResponseEntity<Product> updateProduct(@RequestBody Product newProduct,
+                                                 @PathVariable int id) {
+        if(notAllFieldsFilled(newProduct))
+            return ResponseEntity.badRequest().build();
+
         Optional<Product> stored = productRepository.findById(id);
 
         if (!stored.isPresent()) {
@@ -64,9 +68,21 @@ public class ProductController {
         return ResponseEntity.ok(updated);
     }
 
+    /*Delete product by id*/
+    @DeleteMapping("/product/{id}")
+    public void deleteProduct(@PathVariable int id){
+        productRepository.deleteById(id);
+    }
+
     /*Get products with one type*/
     @GetMapping("/product/byType")
-    public Iterable<Product> getProductsByType(@RequestParam int productType){
+    public Iterable<Product> getProductsByType(@RequestParam int productType) {
         return productRepository.getByProductType_Id(productType);
+    }
+
+    private boolean notAllFieldsFilled(Product product) {
+        return (product.getSerialNumber() == null || product.getProductType() == null ||
+                product.getInfo() == null || product.getManufacturer() == null ||
+                product.getPrice() <= 0 || product.getCount() < 0);
     }
 }

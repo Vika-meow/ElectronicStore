@@ -35,10 +35,9 @@ public class InitDatabase implements ApplicationRunner {
 
     private List<String[]> readCsv(String fileName) throws IOException {
         File file = new ClassPathResource(fileName, this.getClass().getClassLoader()).getFile();
-        BufferedReader csvReader = new BufferedReader(new FileReader(file));
-        List<String[]> rows = new ArrayList<>();
+        try (BufferedReader csvReader = new BufferedReader(new FileReader(file))) {
+            List<String[]> rows = new ArrayList<>();
 
-        try {
             String row = csvReader.readLine();
             // Skipping first row - should always be header
             row = csvReader.readLine();
@@ -47,11 +46,8 @@ public class InitDatabase implements ApplicationRunner {
                 rows.add(data);
                 row = csvReader.readLine();
             }
-            csvReader.close();
-        } catch (IOException ex) {
-            throw ex;
+            return rows;
         }
-        return rows;
     }
 
     private Map<String, Manufacturer> loadManufacturers() throws IOException {
